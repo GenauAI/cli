@@ -6,7 +6,16 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-async-openai = "0.10.3"
 tokio = { version = "1.28.0", features = ["full"] }
 dialoguer = "0.10.4"
-dotenv = "0.15.0"
+genauai-kernel = "0.1.0"
+chrono = "0.4.24"
+rusqlite = "0.29.0"
+rustyline = "11.0.0"
+serde = "1.0.160"
+structopt = "0.3.26"
+serde_json = "1.0.96"
+dirs = "5.0.0"
+
+[patch.crates-io]
+genauai-kernel = { path = "../kernel" }
