@@ -565,6 +565,8 @@ dependencies = [
 [[package]]
 name = "genauai-kernel"
 version = "0.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9a05eae7699c8f335628f32b9c78dff05c359bd2bc04469cc558cda55f14bf49"
 dependencies = [
  "async-openai",
  "chrono",

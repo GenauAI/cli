@@ -12,7 +12,7 @@ dotenv = "0.15.0"
 async-openai = "0.10.3"
 tokio = { version = "1.28.0", features = ["full"] }
 dialoguer = "0.10.4"
-genauai-kernel = {version= "0.0.1", path="../kernel"}
+genauai-kernel = {version= "0.0.2"}
 chrono = "0.4.24"
 rusqlite = "0.29.0"
 rustyline = "11.0.0"
