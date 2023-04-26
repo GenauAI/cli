@@ -5,7 +5,7 @@ edition = "2021"
 license = "MIT"
 description = "CLIfor Genau AI"
 repository = "https://github.com/genauai/cli"
-readme = "README.md"
+readme = "readme.md"
 
 [dependencies]
 dotenv = "0.15.0"
