@@ -582,7 +582,7 @@ dependencies = [
 
 [[package]]
 name = "genauai-cli"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "chrono",
  "dialoguer",
@@ -598,7 +598,7 @@ dependencies = [
 
 [[package]]
 name = "genauai-kernel"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "async-openai",
  "chrono",
