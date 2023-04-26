@@ -1,9 +1,13 @@
 name: Build and Package
 
+defaults:
+  run:
+    shell: bash
+
 on:
   push:
     branches:
-      - main  # replace with your default branch name if different
+      - main # replace with your default branch name if different
 
 jobs:
   build:
@@ -61,7 +65,7 @@ jobs:
         with:
           name: ${{ matrix.target }}
           path: ${{ github.workspace }}/${{ env.PROJECT_NAME }}_${{ matrix.target }}.${{ matrix.ext }}
-          
+
   publish:
     needs: build
     runs-on: ubuntu-latest
