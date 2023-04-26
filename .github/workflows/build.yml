@@ -1,88 +1,35 @@
-name: Build and Package
-
-defaults:
-  run:
-    shell: bash
+name: Rust Release binary
+  uses: rust-build/rust-build.action@v1.4.3
 
 on:
   push:
     branches:
       - main # replace with your default branch name if different
 
+# on:
+#   release:
+#     types: [created]
+
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-        include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            ext: tar.gz
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-            ext: zip
-          - os: macOS-latest
-            target: x86_64-apple-darwin
-            ext: tar.gz
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          target: ${{ matrix.target }}
-          override: true
-
-      - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --target=${{ matrix.target }}
-
-      - name: Package
-        run: |
-          EXT="${{ matrix.ext }}"
-          TARGET="${{ matrix.target }}"
-          PROJECT_NAME=$(grep -m1 name Cargo.toml | sed 's/.*"\(.*\)"/\1/')
-          BINARY_NAME="$PROJECT_NAME"
-          if [[ "$TARGET" == *"windows"* ]]; then
-            BINARY_NAME="$BINARY_NAME.exe"
-          fi
-          mkdir -p package
-          cp target/$TARGET/release/$BINARY_NAME package/
-          if [[ "$EXT" == "zip" ]]; then
-            (cd package && zip ../${PROJECT_NAME}_${TARGET}.${EXT} $BINARY_NAME)
-          else
-            (cd package && tar czvf ../${PROJECT_NAME}_${TARGET}.${EXT} $BINARY_NAME)
-          fi
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ matrix.target }}
-          path: ${{ github.workspace }}/${{ env.PROJECT_NAME }}_${{ matrix.target }}.${{ matrix.ext }}
-
-  publish:
-    needs: build
+  release:
+    name: release ${{ matrix.target }}
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-pc-windows-gnu
+            archive: zip
+          - target: x86_64-unknown-linux-musl
+            archive: tar.gz tar.xz tar.zst
+          - target: x86_64-apple-darwin
+            archive: zip
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@master
+      - name: Compile and release
+        uses: rust-build/rust-build.action@v1.4.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          profile: minimal
-          toolchain: stable
-          override: true
-
-      - name: Publish to crates.io
-        uses: actions-rs/cargo@v1
-        with:
-          command: publish
-          args: --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          RUSTTARGET: ${{ matrix.target }}
+          ARCHIVE_TYPES: ${{ matrix.archive }}
